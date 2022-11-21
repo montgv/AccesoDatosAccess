@@ -46,31 +46,17 @@ namespace AccesoDatosAccess
             //
             // El nombre de la base de datos:
             // (poner el path real de la base de datos de prueba)
-            this.txtBase.Text = "db2000.mdb";
+            this.txtBase.Text = "pruebaDB";
         }
 
         private void btnConectar_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (System.IO.File.Exists(txtBase.Text) == false)
-                {
-                    MessageBox.Show("No existe la base de datos indicada");
-                    txtBase.Focus();
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("ERROR: " + ex.Message + "\nSeguramente porque no existe la base de datos indicada");
-                txtBase.Focus();
-                return;
-            }
+
             //
             // La cadena de conexión
-            string sCnn = "Data Source=" + txtBase.Text + "; Initial Catalog=pruebaDB; User ID=SA; Password=oretania";
+            string conexion = "server=localhost; database=" + txtBase.Text + "; user id=sa; password=oretania";
             // La cadena de selección
-            string sSel = "SELECT * FROM Prueba ORDER BY ID";
+            string sentencia = "SELECT * FROM Prueba ORDER BY ID";
             // Para traer solo los registros entre dos fechas
             // sSel = "SELECT * FROM Prueba WHERE (FechaAlta >= #2006/01/05# AND FechaAlta <= #2006/01/06#)";
 
@@ -80,9 +66,9 @@ namespace AccesoDatosAccess
             {
                 // Crear un nuevo objeto del tipo DataAdapter
                 //Dim cnn As New OleDbConnection(sCnn)
-                da = new SqlDataAdapter(sSel, sCnn);
+                da = new SqlDataAdapter(sentencia, conexion);
                 // Crear los comandos de insertar, actualizar y eliminar
-                SqlConnection cnx = new SqlConnection(sCnn);
+                SqlCommandBuilder cb = new SqlCommandBuilder(da);
                 // Como hay campos con caracteres especiales,
                 // al usarlos incluirlos entre corchetes.
                 cb.QuotePrefix = "[";
@@ -166,7 +152,7 @@ namespace AccesoDatosAccess
         {
             // Usar los datos que hay en los textbox
             dr["Nombre"] = txtNombre.Text;
-            dr["e-mail"] = txtEmail.Text;
+            dr["email"] = txtEmail.Text;
             dr["FechaAlta"] = txtFechaAlta.Text;
             dr["Comentario"] = txtComentario.Text;
         }
@@ -204,7 +190,7 @@ namespace AccesoDatosAccess
             DataRow dr = dt.Rows[f];
             txtID.Text = dr["ID"].ToString();
             txtNombre.Text = dr["Nombre"].ToString();
-            txtEmail.Text = dr["e-mail"].ToString();
+            txtEmail.Text = dr["email"].ToString();
             txtFechaAlta.Text = dr["FechaAlta"].ToString();
             txtComentario.Text = dr["Comentario"].ToString();
             //
